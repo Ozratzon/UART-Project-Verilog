@@ -30,7 +30,7 @@ Also, we created flags in the code to identify when the data Receiver/Transmitte
 
 In additional we implement the code using a shift register as follow: 
 
-![Implementaion](./img/Implementaion.png)
+![Implementaion](./img/Implementation.png)
 
 
 **Part 1:**  
@@ -231,7 +231,7 @@ Different module has different signal of operation. (Any speed up to 115200 baud
 Baud rate is a measure of the speed of data transfer and expressed in bits per second (bps). 
 Also, we divide the period to and even number so we can locate the mid-point of the UART signal for each bit. This allow us to avoid errors and distortion while reading and writing in the UART’s.  
 
-![Baudrate](./img/Baudrate.png)
+![Baudrate](./img/baudrate.png)
 
 the FPGA operation frequency of 125MHz which gives us a period of  => 1/125MHz = 8ns
 The baudrate gives us 1/115.2kbp = 8.6805us => 8680.55 ns
@@ -368,7 +368,7 @@ module Top_design_tb(
 endmodule
 
 ```
-##evealuation 
+##Evaluation 
 
 we check for the bit shift in simulation for debugging as needed and verify the output of Rx and match it with our Tx input value.
 
@@ -382,4 +382,3 @@ we check for the bit shift in simulation for debugging as needed and verify the 
 
 ## Conclusion
 We were able to establish and successfully simulate UART’s communication while better understanding the principle of this type of technology. 
-
