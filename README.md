@@ -13,6 +13,26 @@ Universal asynchronous Receiver/Transmitter
 The main idea is to transmit and receive information using serial data (bit by bit) to parallel data and vise versa.
 The UART’s can communicates between each other, the process of UART’s communication which uses two UART’s to communicate directly with each other will be demonstrate in this project. 
 
+The UART comunication process done as follow: 
+Parallel input => Serial input/output => Parallel output. 
+
+UART requires start-bit and end-bit for operation.
+The start bit will be set to high and will be triggered when it will be set to low. 
+The stop bit will be set to low and will be triggered when it will be set to high. 
+Input data array:  {1’b0, Array[size:0], parity-bit, 1’b1}
+Parity bit (optional): check for errors.  
+Check if the data change during the process due to electromagnetic radiation, long distance transmit or mixture of baud rates. 
+
+##Procedure 
+we created a code for the MCU_Tx to convert parallel input to serial output and MCU_Rx to convert serial input to parallel output as show below: 
+
+Also, we created flags in the code to identify when the data Receiver/Transmitter process is done.  
+
+In additional we implement the code using a shift register as follow: 
+
+![Implementaion](./img/Implementaion.png)
+
+
 **Part 1:**  
 MCU_TX.vhd CODE:  
 ```vhdl
@@ -205,6 +225,19 @@ endmodule
 
 ```
 
+##Baudrate design
+
+Different module has different signal of operation. (Any speed up to 115200 baud usually 9600) The incoming and outcome bits at a specific frequency known as the baud rate.                        
+Baud rate is a measure of the speed of data transfer and expressed in bits per second (bps). 
+Also, we divide the period to and even number so we can locate the mid-point of the UART signal for each bit. This allow us to avoid errors and distortion while reading and writing in the UART’s.  
+
+![Baudrate](./img/Baudrate.png)
+
+the FPGA operation frequency of 125MHz which gives us a period of  => 1/125MHz = 8ns
+The baudrate gives us 1/115.2kbp = 8.6805us => 8680.55 ns
+Therefore (8680.55ns/16(parts))/8ns = 67.8 = 68 (baudrate_counter) (Can be divide by any even number) 
+
+
 **Part 3:**  
 Tick_signal.vhd CODE:  
 ```vhdl
@@ -228,6 +261,13 @@ module Tick_signal(
 endmodule
 
 ```
+
+##Top design 
+
+The top design map all input and output of the modules in the design to each other to create the connection between them as show below:
+
+![Top_design](./img/Top_design.png)
+
 
 **Part 4:**  
 Top_design.vhd CODE:  
@@ -278,6 +318,9 @@ assign led3 = (Rx_done_flag == 1'b1) ? Rx_out[3]:1'b0;
 endmodule
 
 ```
+##Testbench 
+
+We input an 8-bit value to the Tx while enable read_ena and write_ena signal. 
 
 **Part 5:**  
 Top_design_tb.vhd CODE:  
@@ -325,12 +368,17 @@ module Top_design_tb(
 endmodule
 
 ```
+##evealuation 
+
+we check for the bit shift in simulation for debugging as needed and verify the output of Rx and match it with our Tx input value.
 
 **UART_waveform**
 ![UART_waveform](./img/UART_waveform.png)
 
 **UART_simv**
 ![UART_simv](./img/UART_simv.png)
+
+**Note: The input and output values are match** 
 
 ## Conclusion
 We were able to establish and successfully simulate UART’s communication while better understanding the principle of this type of technology. 
